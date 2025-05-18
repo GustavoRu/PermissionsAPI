@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace PermissionsAPI.Permissions.Models
+namespace BackendApi.Permissions.Models
 {
     public class PermissionTypeModel
     {
