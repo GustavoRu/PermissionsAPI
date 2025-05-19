@@ -42,7 +42,7 @@ namespace BackendApi.Permissions.Services
                 EmployeeName = permissionInsertDto.EmployeeName,
                 EmployeeSurname = permissionInsertDto.EmployeeSurname,
                 PermissionTypeId = permissionInsertDto.PermissionTypeId,
-                PermissionDate = permissionInsertDto.PermissionDate
+                PermissionDate = DateTime.UtcNow
             };
 
             await _permissionRepository.Create(permission);
@@ -59,7 +59,7 @@ namespace BackendApi.Permissions.Services
                 permission.EmployeeName = permissionUpdateDto.EmployeeName;
                 permission.EmployeeSurname = permissionUpdateDto.EmployeeSurname;
                 permission.PermissionTypeId = permissionUpdateDto.PermissionTypeId;
-                permission.PermissionDate = permissionUpdateDto.PermissionDate;
+                permission.PermissionDate = DateTime.UtcNow;
 
                 _permissionRepository.Update(permission);
                 await _permissionRepository.Save();

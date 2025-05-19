@@ -23,9 +23,9 @@ namespace BackendApi.Permissions.Validators
                 .NotEmpty().WithMessage("Permission type is required")
                 .GreaterThan(0).WithMessage("Invalid permission type");
 
-            RuleFor(x => x.PermissionDate)
-                .NotEmpty().WithMessage("Permission date is required")
-                .Must(date => date != default).WithMessage("Invalid permission date");
+            // RuleFor(x => x.PermissionDate)
+            //     .NotEmpty().WithMessage("Permission date is required")
+            //     .Must(date => date != default).WithMessage("Invalid permission date");
         }
     }
 } 
