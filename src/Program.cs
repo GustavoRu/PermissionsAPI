@@ -8,10 +8,23 @@ using BackendApi.Permissions.Models;
 using BackendApi.Permissions.Controllers;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using BackendApi.MessagingQueue.Interfaces;
+using BackendApi.MessagingQueue.Services;
+using BackendApi.MessagingQueue.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.SetMinimumLevel(LogLevel.Information);
+
 // Add services to the container.
+builder.Services.Configure<KafkaSetting>(
+    builder.Configuration.GetSection("Kafka"));
+builder.Services.AddSingleton<IKafkaService, KafkaService>();
+builder.Services.AddHostedService<KafkaConsumerService>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 
 // Repositories
@@ -57,7 +70,18 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    Console.WriteLine("✅ Conexión a DB exitosa");
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        logger.LogInformation("Checking database connection...");
+        await dbContext.Database.CanConnectAsync();
+        logger.LogInformation("✅ Database connection successful");
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "❌ Error connecting to the database");
+        throw;
+    }
 }
 
 app.Run();
